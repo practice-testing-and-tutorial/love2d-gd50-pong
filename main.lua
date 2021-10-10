@@ -1,4 +1,4 @@
-push = require 'push'
+Push = require 'push'
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -8,8 +8,12 @@ VIRTUAL_HEIGHT = 243
 
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
-    
-    push:setupScreen(
+
+    SmallFont = love.graphics.newFont('font.ttf', 8)
+
+    love.graphics.setFont(SmallFont)
+
+    Push:setupScreen(
         VIRTUAL_WIDTH, 
         VIRTUAL_HEIGHT, 
         WINDOW_WIDTH, 
@@ -30,16 +34,26 @@ end
 
 function love.draw()
     -- begin rendering at virtual resolution
-    push:apply('start')
+    Push:apply('start')
+
+    -- love.graphics.clear(40, 45, 52, 255)
 
     love.graphics.printf(
-        'Hello Pong',
+        'GD50 Pong!',
         0,
-        VIRTUAL_HEIGHT / 2 - 6,
+        20,
         VIRTUAL_WIDTH,
         'center'
     )
 
+    -- render first paddle (left side)
+    love.graphics.rectangle('fill', 10, 30, 5, 20)
+
+    -- render second paddle (right side)
+    love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 50, 5, 20)
+
+    -- render ball (center)
+    love.graphics.rectangle('fill', VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4 , 4)
     -- end rendering at virtual resolution
-    push:apply('end')
+    Push:apply('end')
 end
