@@ -22,6 +22,8 @@ PADDLE_SPEED = 200
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
+    love.window.setTitle('gd50 Pong')
+
     -- setup the random seed
     math.randomseed(os.time())
 
@@ -124,6 +126,15 @@ function love.draw()
 
     -- render ball (center)
     Ball:render()
+
+    displayFPS()
+
     -- end rendering at virtual resolution
     Push:apply('end')
+end
+
+function displayFPS()
+    love.graphics.setFont(SmallFont)
+    love.graphics.setColor(0, 1, 0, 1)
+    love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
 end
