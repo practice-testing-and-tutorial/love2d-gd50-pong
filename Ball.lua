@@ -10,6 +10,12 @@ function Ball:init(x, y, width, height)
     self.dy =  math.random(-50, 50)
 end
 
+--[[
+    we could refactor to make the ball movement handling processed inside
+    this collides function.
+    but it's just not a best practice,
+    since we can do manything with the collides information
+]]
 function Ball:collides(paddle)
     --[[
         if ball is far right to the paddle
