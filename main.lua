@@ -63,11 +63,52 @@ function love.load()
 end
 
 function  love.update(dt)
+    if GameState == 'play' then
+        -- handling collision with player 1
+        -- speed up the ball and altering ball movement
+        if Ball:collides(Player1) then
+            Ball.dx = -Ball.dx * 1.02
+            Ball.x = Player1.x + 5
+
+            if Ball.dy < 0 then
+                Ball.dy = -math.random(10, 150)
+            else
+                Ball.dy = math.random(10, 150)
+            end
+        end
+
+        -- handling collision with player 1
+        -- speed up the ball and altering ball movement
+        if Ball:collides(Player2) then
+            Ball.dx = -Ball.dx * 1.02
+            Ball.x = Player2.x - 4
+
+            if Ball.dy < 0 then
+                Ball.dy = -math.random(10, 150)
+            else
+                Ball.dy = math.random(10, 150)
+            end
+        end
+
+        -- handling collision with screen boundary
+        if Ball.y <= 0 then
+            Ball.y = 0
+            Ball.dy = -Ball.dy
+        end
+
+        if Ball.y >= VIRTUAL_HEIGHT - Ball.height then
+            Ball.y = VIRTUAL_HEIGHT - Ball.height
+            Ball.dy = -Ball.dy
+        end
+    end
+
     -- player 1 movement
     if love.keyboard.isDown('w') then
         Player1.dy = -PADDLE_SPEED
     elseif love.keyboard.isDown('s') then
         Player1.dy = PADDLE_SPEED
+    else
+        Player1.dy = 0
     end
 
     -- player 2 movement
@@ -75,6 +116,8 @@ function  love.update(dt)
         Player2.dy = -PADDLE_SPEED
     elseif love.keyboard.isDown('down') then
         Player2.dy = PADDLE_SPEED
+    else
+        Player2.dy = 0
     end
 
     -- ball movement
@@ -127,13 +170,13 @@ function love.draw()
     -- render ball (center)
     Ball:render()
 
-    displayFPS()
+    DisplayFPS()
 
     -- end rendering at virtual resolution
     Push:apply('end')
 end
 
-function displayFPS()
+function DisplayFPS()
     love.graphics.setFont(SmallFont)
     love.graphics.setColor(0, 1, 0, 1)
     love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
