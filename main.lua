@@ -68,7 +68,7 @@ function  love.update(dt)
         -- speed up the ball and altering ball movement
         if Ball:collides(Player1) then
             Ball.dx = -Ball.dx * 1.02
-            Ball.x = Player1.x + 5
+            Ball.x = Player1.x + Player1.width + 1
 
             if Ball.dy < 0 then
                 Ball.dy = -math.random(10, 150)
@@ -81,7 +81,7 @@ function  love.update(dt)
         -- speed up the ball and altering ball movement
         if Ball:collides(Player2) then
             Ball.dx = -Ball.dx * 1.02
-            Ball.x = Player2.x - 4
+            Ball.x = Player2.x - Ball.width - 1
 
             if Ball.dy < 0 then
                 Ball.dy = -math.random(10, 150)
