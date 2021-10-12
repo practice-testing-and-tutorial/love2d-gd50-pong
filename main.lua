@@ -22,7 +22,7 @@ PADDLE_SPEED = 200
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
-    love.window.setTitle('gd50 Pong')
+    love.window.setTitle('Om Pong')
 
     -- setup the random seed
     math.randomseed(os.time())
@@ -59,11 +59,22 @@ function love.load()
     Player1Score = 0
     Player2Score = 0
 
+    ServingPlayer = 1
+
     GameState = 'start'
 end
 
 function  love.update(dt)
-    if GameState == 'play' then
+
+    if GameState == 'serve' then
+        Ball.dy = math.random(-50, 50)
+
+        if ServingPlayer == 1 then
+            Ball.dx = math.random(140, 200)
+        else
+            Ball.dx = -math.random(140, 200)
+        end
+    elseif GameState == 'play' then
         -- handling collision with player 1
         -- speed up the ball and altering ball movement
         if Ball:collides(Player1) then
@@ -100,6 +111,21 @@ function  love.update(dt)
             Ball.y = VIRTUAL_HEIGHT - Ball.height
             Ball.dy = -Ball.dy
         end
+
+        -- handling score
+        if Ball.x < 0 then
+            ServingPlayer = 1
+            Player2Score = Player2Score + 1
+            Ball:reset()
+            GameState = 'serve'
+        end
+
+        if Ball.x + Ball.width > VIRTUAL_WIDTH then
+            ServingPlayer = 2
+            Player1Score = Player1Score + 1
+            Ball:reset()
+            GameState = 'serve'
+        end
     end
 
     -- player 1 movement
@@ -134,11 +160,9 @@ function love.keypressed(key)
         love.event.quit()
     elseif key == 'enter' or key == 'return' then
         if GameState == 'start' then
+            GameState = 'serve'
+        elseif GameState == 'serve' then
             GameState = 'play'
-        else
-            GameState = 'start'
-
-            Ball:reset()
         end
     end
 end
@@ -149,17 +173,24 @@ function love.draw()
 
     love.graphics.clear(40/255, 45/255, 52/255, 1)
 
-    love.graphics.setFont(SmallFont)
-
     if GameState == 'start' then
-        love.graphics.printf('Start State!', 0, 20, VIRTUAL_WIDTH, 'center')
-    else
-        love.graphics.printf('Play State!', 0, 20, VIRTUAL_WIDTH, 'center')
+        love.graphics.setFont(SmallFont)
+        love.graphics.printf('Welcome to Om-Pong!', 0, 10, VIRTUAL_WIDTH, 'center')
+        love.graphics.printf('Press Enter to begin!', 0, 20, VIRTUAL_WIDTH, 'center')
+    elseif GameState == 'serve' then
+        love.graphics.setFont(SmallFont)
+        love.graphics.printf(
+            'Player ' .. tostring(ServingPlayer) .. "'s serve!",
+            0,
+            10,
+            VIRTUAL_WIDTH,
+            'center')
+        love.graphics.printf('Press Enter to serve!', 0, 20, VIRTUAL_WIDTH, 'center')
+    elseif GameState == 'play' then
+        -- nothing to display yet
     end
 
-    love.graphics.setFont(ScoreFont)
-    love.graphics.print(tostring(Player1Score), VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 3)
-    love.graphics.print(tostring(Player2Score), VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
+    DisplayScore()
 
     -- render first paddle (left side)
     Player1:render()
@@ -180,4 +211,12 @@ function DisplayFPS()
     love.graphics.setFont(SmallFont)
     love.graphics.setColor(0, 1, 0, 1)
     love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
+end
+
+function DisplayScore()
+    love.graphics.setFont(ScoreFont)
+    love.graphics.print(tostring(Player1Score), VIRTUAL_WIDTH / 2 - 50, 
+        VIRTUAL_HEIGHT / 3)
+    love.graphics.print(tostring(Player2Score), VIRTUAL_WIDTH / 2 + 30,
+        VIRTUAL_HEIGHT / 3)
 end
